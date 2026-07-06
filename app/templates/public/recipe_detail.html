@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}{{ recipe.title }} -- Bifrost Brews{% endblock %}
+{% block meta_description %}{{ recipe.summary }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block og_image %}{% if recipe.hero_image %}{{ site_url }}{{ recipe.hero_image.path }}{% else %}{{ site_url }}/static/img/logo-512.png{% endif %}{% endblock %}
+
+{% block content %}
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
+    <span class="font-ui text-xs uppercase tracking-wide text-gold font-semibold">{{ recipe.style }}</span>
+    <div class="mt-1 flex flex-wrap items-center gap-3">
+      <h1 class="font-display text-h1 text-night">{{ recipe.title }}</h1>
+      {% include "partials/_difficulty_horns.html" with context %}
+    </div>
+    <div class="mt-3">
+      {% include "partials/_stat_badges.html" with context %}
+    </div>
+
+    <div class="mt-8 grid gap-8 lg:grid-cols-3">
+      <div class="lg:hidden">
+        {% include "public/_recipe_summary_card.html" %}
+      </div>
+
+      <div class="lg:col-span-2 lg:order-1 space-y-10">
+        <div class="bg-parchment-dark rounded-xl p-6">
+          <h3 class="font-display text-h3 text-night">What You'll Need</h3>
+          <div class="bifrost-divider mt-2 mb-4"></div>
+          <ul class="divide-y divide-night/10" x-data>
+            {% for ing in recipe.ingredients_json %}
+              <li class="flex items-start gap-4 py-2.5">
+                <label class="flex items-start gap-3 flex-1 cursor-pointer">
+                  <input type="checkbox" class="mt-1.5 accent-pine">
+                  <span class="flex-1">
+                    <span class="block text-night">{{ ing.item }}</span>
+                    {% if ing.note %}
+                      <span class="block text-xs text-night/50">{{ ing.note }}</span>
+                    {% endif %}
+                  </span>
+                  <span class="w-20 shrink-0 text-right font-mono text-sm text-gold">
+                    {{ ing.amount }} {{ ing.unit }}
+                  </span>
+                </label>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-display text-h3 text-night">Timeline</h3>
+          <div class="bifrost-divider mt-2 mb-6"></div>
+          <ol class="relative border-l-2 border-gold/30 pl-6 space-y-8">
+            {% for step in recipe.steps_json %}
+              <li class="relative">
+                <span class="absolute -left-[1.6rem] top-1 h-3 w-3 rounded-full {% if step.day_offset == 0 %}bg-gold ring-4 ring-gold/25{% else %}bg-gold/60{% endif %}"></span>
+                <p class="font-ui text-xs font-semibold uppercase tracking-wide text-pine">
+                  Day {{ step.day_offset }}{% if step.day_offset == 0 %} -- Brew Day{% endif %}
+                </p>
+                <p class="font-display text-base text-night mt-0.5">{{ step.title }}</p>
+                <p class="mt-1 text-night/80">{{ step.description }}</p>
+              </li>
+            {% endfor %}
+          </ol>
+        </div>
+
+        {% if recipe.body_html %}
+          <div class="prose-content">
+            {{ recipe.body_html | safe }}
+          </div>
+        {% endif %}
+
+        {% if recipe.tags %}
+          <div class="flex flex-wrap gap-2">
+            {% for tag in recipe.tags %}
+              {% include "partials/_tag_pill.html" %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="hidden lg:block lg:order-2">
+        <div class="sticky top-24">
+          {% include "public/_recipe_summary_card.html" %}
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

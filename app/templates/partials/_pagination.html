@@ -1,0 +1,19 @@
+{# expects: page (Page dataclass), base_path (e.g. "/articles"), extra_qs (optional querystring without leading ?/&, e.g. "style=cyser") #}
+{% if page.total_pages > 1 %}
+  {% set qs = ("&" + extra_qs) if extra_qs else "" %}
+  <nav class="mt-10 flex items-center justify-center gap-6 font-ui text-sm" aria-label="Pagination">
+    {% if page.has_prev %}
+      <a href="{{ base_path }}?page={{ page.page - 1 }}{{ qs }}" class="text-night hover:text-gold hover:underline">&lsaquo; Newer</a>
+    {% else %}
+      <span class="text-night/30">&lsaquo; Newer</span>
+    {% endif %}
+
+    <span class="text-night/60">Page {{ page.page }} of {{ page.total_pages }}</span>
+
+    {% if page.has_next %}
+      <a href="{{ base_path }}?page={{ page.page + 1 }}{{ qs }}" class="text-night hover:text-gold hover:underline">Older &rsaquo;</a>
+    {% else %}
+      <span class="text-night/30">Older &rsaquo;</span>
+    {% endif %}
+  </nav>
+{% endif %}

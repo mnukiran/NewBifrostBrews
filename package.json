@@ -1,0 +1,14 @@
+{
+  "name": "bifrostbrews",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bifrost Brews -- Tailwind build pipeline",
+  "scripts": {
+    "css": "tailwindcss -i styles/input.css -o app/static/css/site.css --minify",
+    "css:watch": "tailwindcss -i styles/input.css -o app/static/css/site.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.2",
+    "tailwindcss": "^4.3.2"
+  }
+}

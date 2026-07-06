@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Bifrost Brews -- Nectar of the Gods{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}A blog and recipe site about mead-making and other fermented, alcoholic beverages.{% endblock %}">
+  <link rel="canonical" href="{% block canonical %}{{ site_url }}{{ request.url.path }}{% endblock %}">
+
+  <meta property="og:site_name" content="Bifrost Brews">
+  <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ self.meta_description() }}{% endblock %}">
+  <meta property="og:image" content="{% block og_image %}{{ site_url }}/static/img/logo-512.png{% endblock %}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="/static/img/favicon-32.png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+  <link rel="alternate" type="application/rss+xml" title="Bifrost Brews RSS" href="/rss.xml">
+
+  <link rel="stylesheet" href="/static/css/site.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-parchment text-night font-body antialiased">
+  <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-gold focus:text-night focus:px-4 focus:py-2 focus:rounded">
+    Skip to content
+  </a>
+
+  <header x-data="{ mobileOpen: false, searchOpen: false }" class="sticky top-0 z-40 bg-night">
+    <nav class="mx-auto max-w-6xl px-4 sm:px-6 flex items-center justify-between h-16" aria-label="Primary">
+      <a href="/" class="flex items-center gap-3 shrink-0">
+        <img src="/static/img/logo-web.webp" alt="Bifrost Brews logo" width="48" height="48" class="rounded-full">
+        <span class="font-display text-parchment text-lg tracking-wide hidden sm:inline">BIFROST BREWS</span>
+      </a>
+
+      <ul class="hidden md:flex items-center gap-8 font-ui text-parchment">
+        {% set nav_links = [("/articles", "Articles"), ("/recipes", "Recipes"), ("/about", "About")] %}
+        {% for href, label in nav_links %}
+          <li>
+            <a href="{{ href }}"
+               class="relative pb-1 hover:text-gold-light transition-colors duration-150 {% if request.url.path.startswith(href) %}text-gold border-b-2 border-gold{% else %}border-b-2 border-transparent{% endif %}">
+              {{ label }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+
+      <div class="flex items-center gap-4">
+        <div class="relative">
+          <button @click="searchOpen = !searchOpen" aria-label="Search" class="text-parchment hover:text-gold-light transition-colors duration-150">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="9" cy="9" r="6"/>
+              <path d="M14 14L18 18" stroke-linecap="round"/>
+            </svg>
+          </button>
+          <form x-show="searchOpen" x-transition @click.outside="searchOpen = false" action="/search" method="get"
+                class="absolute right-0 mt-2 w-80 bg-parchment rounded-lg shadow-lg p-2" style="display:none;">
+            <input type="search" name="q" placeholder="Search recipes and articles..." autocomplete="off"
+                   hx-get="/search/partial" hx-trigger="keyup changed delay:300ms, search" hx-target="#live-search-results"
+                   class="w-full rounded px-3 py-2 text-night font-ui text-sm border border-parchment-dark focus:outline-none focus:ring-2 focus:ring-gold">
+            <div id="live-search-results" class="max-h-96 overflow-y-auto"></div>
+          </form>
+        </div>
+
+        <button @click="mobileOpen = !mobileOpen" class="md:hidden text-parchment" aria-label="Toggle menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <div x-show="mobileOpen" x-transition @click.outside="mobileOpen = false" class="md:hidden bg-night border-t border-night-deep" style="display:none;">
+      <ul class="flex flex-col px-4 py-2 font-ui text-parchment">
+        {% for href, label in nav_links %}
+          <li><a href="{{ href }}" class="block py-3 {% if request.url.path.startswith(href) %}text-gold{% endif %}">{{ label }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="h-[3px] bifrost-gradient"></div>
+  </header>
+
+  <main id="main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="mt-16 bg-gradient-to-b from-night to-night-deep text-parchment">
+    <div class="h-px bg-gold-light/40"></div>
+    <div class="mx-auto max-w-6xl px-4 sm:px-6 py-10 flex flex-col items-center text-center gap-4">
+      <img src="/static/img/logo-web.webp" alt="Bifrost Brews logo" width="40" height="40" class="rounded-full">
+      <p class="font-display italic text-gold-light">Nectar of the Gods</p>
+      <ul class="flex gap-6 font-ui text-sm">
+        <li><a href="/articles" class="hover:text-gold-light transition-colors duration-150">Articles</a></li>
+        <li><a href="/recipes" class="hover:text-gold-light transition-colors duration-150">Recipes</a></li>
+        <li><a href="/about" class="hover:text-gold-light transition-colors duration-150">About</a></li>
+        <li><a href="/rss.xml" class="hover:text-gold-light transition-colors duration-150">RSS</a></li>
+      </ul>
+      <p class="font-ui text-xs text-parchment/60">&copy; 2026 Bifrost Brews</p>
+    </div>
+  </footer>
+
+  <script src="/static/js/htmx.min.js" defer></script>
+  <script src="/static/js/alpine.min.js" defer></script>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

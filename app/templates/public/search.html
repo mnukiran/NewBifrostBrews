@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}{% if query %}Search: {{ query }} -- {% endif %}Bifrost Brews{% endblock %}
+{% block meta_description %}Search articles and recipes on Bifrost Brews.{% endblock %}
+
+{% block content %}
+  <section class="mx-auto max-w-3xl px-4 sm:px-6 py-10">
+    <h1 class="font-display text-h1 text-night">Search</h1>
+    <div class="bifrost-divider mt-2 mb-6"></div>
+
+    <form method="get" action="/search" class="mb-8">
+      <input type="search" name="q" value="{{ query }}" placeholder="Search recipes and articles..."
+             class="w-full rounded-lg px-4 py-3 text-night font-ui border border-night/20 bg-parchment-dark focus:outline-none focus:ring-2 focus:ring-gold">
+    </form>
+
+    {% if query %}
+      {% set recipes = results|selectattr("content_type", "equalto", "recipe")|list %}
+      {% set posts = results|selectattr("content_type", "equalto", "post")|list %}
+
+      {% if not results %}
+        <p class="text-night/60">No results for "{{ query }}".</p>
+      {% endif %}
+
+      {% if recipes %}
+        <h2 class="font-display text-h3 text-night mt-6">Recipes</h2>
+        <ul class="mt-3 divide-y divide-night/10">
+          {% for r in recipes %}
+            <li class="py-3">
+              <a href="/recipes/{{ r.slug }}" class="font-display text-lg text-night hover:text-gold transition-colors duration-150">{{ r.title }}</a>
+              <p class="mt-1 text-sm text-night/70 [&_mark]:bg-gold/20 [&_mark]:text-night [&_mark]:not-italic">{{ r.snippet | safe }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+
+      {% if posts %}
+        <h2 class="font-display text-h3 text-night mt-8">Articles</h2>
+        <ul class="mt-3 divide-y divide-night/10">
+          {% for p in posts %}
+            <li class="py-3">
+              <a href="/articles/{{ p.slug }}" class="font-display text-lg text-night hover:text-gold transition-colors duration-150">{{ p.title }}</a>
+              <p class="mt-1 text-sm text-night/70 [&_mark]:bg-gold/20 [&_mark]:text-night [&_mark]:not-italic">{{ p.snippet | safe }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endif %}
+  </section>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Articles -- Bifrost Brews{% endblock %}
+{% block meta_description %}Guides and notes on mead-making and fermentation, from the Bifrost Brews journal.{% endblock %}
+
+{% block content %}
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
+    <h1 class="font-display text-h1 text-night">Articles</h1>
+    <div class="bifrost-divider mt-2 mb-8"></div>
+
+    {% if page_obj.items %}
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {% for post in page_obj.items %}
+          {% include "partials/_article_card.html" %}
+        {% endfor %}
+      </div>
+      {% set page = page_obj %}
+      {% set base_path = "/articles" %}
+      {% include "partials/_pagination.html" with context %}
+    {% else %}
+      <p class="text-night/60">No articles published yet.</p>
+    {% endif %}
+  </section>
+{% endblock %}

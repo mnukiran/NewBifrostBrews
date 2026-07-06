@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}#{{ tag.name }} -- Bifrost Brews{% endblock %}
+{% block meta_description %}Articles and recipes tagged "{{ tag.name }}" on Bifrost Brews.{% endblock %}
+
+{% block content %}
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
+    <h1 class="font-display text-h1 text-night">#{{ tag.name }}</h1>
+    <div class="bifrost-divider mt-2 mb-8"></div>
+
+    {% if items %}
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {% for item in items %}
+          {% if item.__class__.__name__ == "Recipe" %}
+            {% set recipe = item %}
+            {% include "partials/_recipe_card.html" %}
+          {% else %}
+            {% set post = item %}
+            {% include "partials/_article_card.html" %}
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-night/60">Nothing tagged "{{ tag.name }}" yet.</p>
+    {% endif %}
+  </section>
+{% endblock %}

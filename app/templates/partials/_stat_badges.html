@@ -1,0 +1,15 @@
+{# expects: recipe #}
+<div class="flex gap-2">
+  <span class="rounded-full bg-parchment px-2.5 py-1 text-center">
+    <span class="block font-ui text-[0.65rem] uppercase tracking-wide text-night/60">OG</span>
+    <span class="block font-mono text-sm font-semibold text-night">{{ "%.3f"|format(recipe.og) if recipe.og is not none else "--" }}</span>
+  </span>
+  <span class="rounded-full bg-parchment px-2.5 py-1 text-center">
+    <span class="block font-ui text-[0.65rem] uppercase tracking-wide text-night/60">FG</span>
+    <span class="block font-mono text-sm font-semibold text-night">{{ "%.3f"|format(recipe.fg) if recipe.fg is not none else "--" }}</span>
+  </span>
+  <span class="rounded-full bg-parchment px-2.5 py-1 text-center border border-gold">
+    <span class="block font-ui text-[0.65rem] uppercase tracking-wide text-night/60">ABV</span>
+    <span class="block font-mono text-sm font-semibold text-night">{{ "%.1f"|format(recipe.abv) if recipe.abv is not none else "--" }}%</span>
+  </span>
+</div>

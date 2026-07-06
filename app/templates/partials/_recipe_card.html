@@ -1,0 +1,32 @@
+{# expects: recipe #}
+<article class="bg-parchment-dark rounded-xl shadow-[0_2px_8px_rgb(30_42_71_/_0.08)] hover:shadow-[0_6px_16px_rgb(30_42_71_/_0.14)] hover:-translate-y-0.5 transition-all duration-150">
+  <a href="/recipes/{{ recipe.slug }}" class="block">
+    {% if recipe.hero_image %}
+      <img src="{{ recipe.hero_image.path }}" alt="{{ recipe.hero_image.alt_text }}"
+           width="{{ recipe.hero_image.width }}" height="{{ recipe.hero_image.height }}"
+           class="aspect-video w-full rounded-t-xl object-cover">
+    {% else %}
+      {% include "partials/_hero_placeholder.html" %}
+    {% endif %}
+  </a>
+  <div class="p-5">
+    <div class="flex items-center justify-between">
+      <span class="font-ui text-xs uppercase tracking-wide text-gold font-semibold">{{ recipe.style }}</span>
+      {% include "partials/_difficulty_horns.html" with context %}
+    </div>
+    <a href="/recipes/{{ recipe.slug }}" class="block">
+      <h3 class="mt-1 font-display text-xl text-night">{{ recipe.title }}</h3>
+    </a>
+    <p class="mt-2 text-sm text-night/80 line-clamp-2">{{ recipe.summary }}</p>
+    <div class="mt-3">
+      {% include "partials/_stat_badges.html" with context %}
+    </div>
+    {% if recipe.tags %}
+      <div class="mt-3 flex flex-wrap gap-2">
+        {% for tag in recipe.tags %}
+          {% include "partials/_tag_pill.html" %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</article>

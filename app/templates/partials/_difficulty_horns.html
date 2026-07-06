@@ -1,0 +1,9 @@
+{# expects: recipe (uses recipe.difficulty: beginner | intermediate | advanced) #}
+{% set level = {"beginner": 1, "intermediate": 2, "advanced": 3}[recipe.difficulty.value] %}
+<span class="inline-flex items-center gap-0.5" title="{{ recipe.difficulty.value }} difficulty" aria-label="{{ recipe.difficulty.value }} difficulty">
+  {% for i in range(3) %}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-3.5 w-3.5 {% if i < level %}text-gold{% else %}text-gold/25{% endif %}" fill="none" stroke="currentColor" stroke-width="1.6">
+      <path d="M5 4c6 1 13 6 13 12 0 2-1.5 3.5-3.5 3.5S12 18 12 16" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  {% endfor %}
+</span>

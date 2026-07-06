@@ -1,0 +1,33 @@
+{# expects: recipe #}
+<div class="bg-parchment-dark rounded-xl p-6 font-ui text-sm space-y-3">
+  <h3 class="font-display text-lg text-night">Summary</h3>
+  <dl class="space-y-2">
+    <div class="flex justify-between">
+      <dt class="text-night/60">Batch size</dt>
+      <dd class="font-mono text-night">{{ recipe.batch_liters }} L</dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-night/60">Total time</dt>
+      <dd class="font-mono text-night">{{ recipe.total_days }} days</dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-night/60">OG</dt>
+      <dd class="font-mono text-night">{{ "%.3f"|format(recipe.og) if recipe.og is not none else "--" }}</dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-night/60">FG</dt>
+      <dd class="font-mono text-night">{{ "%.3f"|format(recipe.fg) if recipe.fg is not none else "--" }}</dd>
+    </div>
+    <div class="flex justify-between">
+      <dt class="text-night/60">ABV</dt>
+      <dd class="font-mono text-night">{{ "%.1f"|format(recipe.abv) if recipe.abv is not none else "--" }}%</dd>
+    </div>
+  </dl>
+  {% if recipe.tags %}
+    <div class="pt-2 flex flex-wrap gap-2">
+      {% for tag in recipe.tags %}
+        {% include "partials/_tag_pill.html" %}
+      {% endfor %}
+    </div>
+  {% endif %}
+</div>

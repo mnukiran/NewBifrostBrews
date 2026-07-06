@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}About -- Bifrost Brews{% endblock %}
+{% block meta_description %}About Bifrost Brews.{% endblock %}
+
+{% block content %}
+  <article class="mx-auto max-w-[65ch] px-4 sm:px-6 py-10">
+    <div class="prose-content">
+      {{ about_html | safe }}
+    </div>
+  </article>
+{% endblock %}

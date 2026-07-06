@@ -1,0 +1,35 @@
+{# expects: query, results (list of SearchResult) #}
+{% set recipes = results|selectattr("content_type", "equalto", "recipe")|list %}
+{% set posts = results|selectattr("content_type", "equalto", "post")|list %}
+
+{% if query and not results %}
+  <p class="px-2 py-3 text-sm text-night/60 font-ui">No results for "{{ query }}".</p>
+{% endif %}
+
+{% if recipes %}
+  <p class="px-2 pt-3 pb-1 font-ui text-xs uppercase tracking-wide text-night/50">Recipes</p>
+  <ul>
+    {% for r in recipes %}
+      <li>
+        <a href="/recipes/{{ r.slug }}" class="block px-2 py-2 rounded hover:bg-parchment-dark">
+          <span class="block font-display text-sm text-night">{{ r.title }}</span>
+          <span class="block text-xs text-night/70 [&_mark]:bg-gold/20 [&_mark]:text-night [&_mark]:not-italic">{{ r.snippet | safe }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% if posts %}
+  <p class="px-2 pt-3 pb-1 font-ui text-xs uppercase tracking-wide text-night/50">Articles</p>
+  <ul>
+    {% for p in posts %}
+      <li>
+        <a href="/articles/{{ p.slug }}" class="block px-2 py-2 rounded hover:bg-parchment-dark">
+          <span class="block font-display text-sm text-night">{{ p.title }}</span>
+          <span class="block text-xs text-night/70 [&_mark]:bg-gold/20 [&_mark]:text-night [&_mark]:not-italic">{{ p.snippet | safe }}</span>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

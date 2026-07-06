@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Bifrost Brews -- Nectar of the Gods{% endblock %}
+{% block meta_description %}A blog and recipe site about mead-making and other fermented, alcoholic beverages. Nectar of the Gods.{% endblock %}
+
+{% block content %}
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 py-14 sm:py-20 flex flex-col sm:flex-row items-center gap-10">
+    <img src="/static/img/logo-web.webp" alt="Bifrost Brews logo" width="280" height="280"
+         class="w-40 sm:w-[280px] h-auto shrink-0">
+    <div class="text-center sm:text-left">
+      <h1 class="font-display text-h1 text-night">Brewing the Nectar of the Gods</h1>
+      <p class="mt-4 text-lg text-night/80 max-w-prose">
+        Recipes, notes, and the occasional happy accident from a home mead-maker's cellar.
+      </p>
+      <div class="mt-6 flex flex-wrap justify-center sm:justify-start gap-4">
+        <a href="/articles" class="rounded-lg bg-gold text-night font-ui font-medium px-5 py-2.5 hover:bg-gold-light transition-colors duration-150">
+          Read the Guides
+        </a>
+        <a href="/recipes" class="rounded-lg border-[1.5px] border-gold text-night font-ui font-medium px-5 py-2.5 hover:bg-gold/10 transition-colors duration-150">
+          Browse Recipes
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
+    <h2 class="font-display text-h2 text-night">Latest Brews</h2>
+    <div class="bifrost-divider mt-2 mb-6"></div>
+    {% if latest_recipes %}
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {% for recipe in latest_recipes %}
+          {% include "partials/_recipe_card.html" %}
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-night/60">No recipes published yet.</p>
+    {% endif %}
+  </section>
+
+  <section class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
+    <h2 class="font-display text-h2 text-night">From the Journal</h2>
+    <div class="bifrost-divider mt-2 mb-6"></div>
+    {% if latest_posts %}
+      <ul class="divide-y divide-night/10">
+        {% for post in latest_posts %}
+          <li class="py-4">
+            <a href="/articles/{{ post.slug }}" class="font-display text-lg text-night hover:text-gold transition-colors duration-150">
+              {{ post.title }}
+            </a>
+            <p class="mt-1 text-sm text-night/80">{{ post.summary }}</p>
+            <p class="mt-1 font-ui text-meta text-night/60">
+              {{ post.published_at | dateformat }} &middot; {{ post.reading_minutes }} min read
+            </p>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-night/60">No articles published yet.</p>
+    {% endif %}
+  </section>
+
+  {% if tags %}
+    <section class="mx-auto max-w-6xl px-4 sm:px-6 py-10">
+      <h2 class="font-display text-h2 text-night">Browse by Tag</h2>
+      <div class="bifrost-divider mt-2 mb-6"></div>
+      <div class="flex flex-wrap gap-2">
+        {% for tag in tags %}
+          {% include "partials/_tag_pill.html" %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}

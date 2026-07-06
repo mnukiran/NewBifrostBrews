@@ -1,0 +1,28 @@
+{# expects: post #}
+<article class="bg-parchment-dark rounded-xl shadow-[0_2px_8px_rgb(30_42_71_/_0.08)] hover:shadow-[0_6px_16px_rgb(30_42_71_/_0.14)] hover:-translate-y-0.5 transition-all duration-150">
+  <a href="/articles/{{ post.slug }}" class="block">
+    {% if post.hero_image %}
+      <img src="{{ post.hero_image.path }}" alt="{{ post.hero_image.alt_text }}"
+           width="{{ post.hero_image.width }}" height="{{ post.hero_image.height }}"
+           class="aspect-video w-full rounded-t-xl object-cover">
+    {% else %}
+      {% include "partials/_hero_placeholder.html" %}
+    {% endif %}
+  </a>
+  <div class="p-5">
+    <a href="/articles/{{ post.slug }}" class="block">
+      <h3 class="font-display text-xl text-night">{{ post.title }}</h3>
+    </a>
+    <p class="mt-2 text-sm text-night/80 line-clamp-2">{{ post.summary }}</p>
+    <p class="mt-3 font-ui text-meta text-night/60">
+      {{ post.published_at | dateformat }} &middot; {{ post.reading_minutes }} min read
+    </p>
+    {% if post.tags %}
+      <div class="mt-3 flex flex-wrap gap-2">
+        {% for tag in post.tags %}
+          {% include "partials/_tag_pill.html" %}
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+</article>
