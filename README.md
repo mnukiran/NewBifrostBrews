@@ -2,7 +2,9 @@
 
 A blog and recipe site about mead-making and other fermented/alcoholic beverages. "Nectar of the Gods."
 
-Full product spec lives in `specs/`. Full engineering status, architecture notes, and a detailed list of workarounds/gotchas from the current build live in `CLAUDE.md` — **read that before making changes**, especially the "Known workarounds, dummy values, and gotchas" section.
+Full product spec lives in `specs/`. Full engineering status, architecture notes, and a detailed list of workarounds/gotchas from the current build live in `AGENTS.md` (identical content also in `CLAUDE.md`, which Claude Code auto-loads) — **read that before making changes**, especially the "Known workarounds, dummy values, and gotchas" section.
+
+> **AI agents:** read `AGENTS.md` in full before writing or changing any code in this repo.
 
 ## Current status (2026-07-06)
 

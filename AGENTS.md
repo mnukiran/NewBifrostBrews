@@ -1,8 +1,8 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to AI coding agents (Claude Code, Cursor, Codex CLI, Windsurf, etc.) working in this repository. **Read this in full, along with `README.md`, before making any changes** — the "Known workarounds, dummy values, and gotchas" section below documents real shortcuts that look like bugs if you don't know they're intentional.
 
-> This file is kept in sync with `AGENTS.md` (same content, for non-Claude coding agents). If you edit one, edit the other.
+> This file is kept in sync with `CLAUDE.md` (same content, Claude Code auto-loads that one specifically). If you edit one, edit the other.
 
 ## Project status
 
