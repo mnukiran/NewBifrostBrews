@@ -4,9 +4,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project status
 
-This repository currently contains **only specs** (`specs/00-overview.md` through `specs/03-frontend-ui-spec.md`) and logo assets (`specs/assets/`). No application code exists yet. The specs are written for an AI coding agent to implement from scratch — read all four before writing code, since they cross-reference each other (e.g. the data model in `02-backend-spec.md` depends on directory layout in `01-architecture.md`).
+The specs (`specs/00-overview.md` through `specs/03-frontend-ui-spec.md`) are written for an AI coding agent to implement from scratch — read all four before making further changes, since they cross-reference each other (e.g. the data model in `02-backend-spec.md` depends on directory layout in `01-architecture.md`).
 
-Follow the **build order** in `specs/00-overview.md` § Build order: skeleton/config/Tailwind → DB models → public routes → admin (auth → CRUD → uploads → scheduling → view counts) → design system → SEO → seed content → acceptance checklist.
+The build order was deliberately reshuffled from the spec's default sequence: instead of DB models → public routes → admin → design system, this project did skeleton + Tailwind/fonts → DB models → **all public routes and templates with the full design system applied, wired to a real seeded DB** → (admin still pending). This was a user choice to see the real frontend early, not a spec change.
+
+**Done:**
+- Project skeleton (`pyproject.toml`, `app/config.py`, `app/db.py`, `app/main.py`), dependencies installed via `uv`
+- Tailwind v4 CLI pipeline (`styles/input.css` → `app/static/css/site.css`) with the full theme token set, self-hosted fonts (Cinzel/Source Serif 4/Inter/JetBrains Mono as woff2), vendored htmx + Alpine, logo assets copied into `app/static/img/`
+- SQLAlchemy models for all tables in `02-backend-spec.md` (`app/models.py`) + Alembic migrations, including the FTS5 `search_index` virtual table
+- `scripts/seed.py` — 3 sample articles + 2 sample recipes, tagged "Sample Content"
+- `app/services/content.py` (published-state filtering, pagination, tag queries, FTS5 search, view counting) and `app/services/markdown.py` (markdown-it-py → nh3-sanitized HTML, Pygments highlighting, reading-time calc)
+- All public routes + templates (`app/routers/public.py`, `app/templates/`): home, article list/detail, recipe list/detail with style/difficulty filters, tag pages, live htmx search + full search page, about, custom 404 — visually verified in-browser at desktop and mobile widths
+
+**Not yet built (next steps, in spec's intended order):**
+- Admin: auth (login/logout, session cookies, CSRF, rate limiting), CRUD for posts/recipes, image upload pipeline (`app/services/images.py`), markdown live-preview endpoint, scheduling controls, `/admin/settings`
+- `app/routers/feeds.py` — `/rss.xml`, `/sitemap.xml`, `/robots.txt` (base.html already links to `/rss.xml`, currently 404s)
+- Analytics dashboard (30-day views chart, top posts) — `daily_views` table and `record_view()` already exist and are being written to, just no admin UI reads them yet
+- Tests (`tests/`) per the spec's minimum list — none written yet
+- A `Makefile`/`justfile` wrapping `make dev`/`make css`/`make test`/`make seed` (commands below work standalone for now)
 
 ## What this is
 
@@ -22,18 +37,20 @@ Bifrost Brews — a mead-making/fermented-beverage blog+recipe site (bifrostbrew
 - All content/images/data on local disk: SQLite file + `data/uploads/`.
 - Explicitly **out of scope for v1** (design so they're addable later, but don't build): brewing calculators, comments, newsletter signup, brew log/batch journal, glossary.
 
-## Commands (per `specs/01-architecture.md` § Local dev — set these up if missing)
+## Commands
+
+These are already set up and working (no `set_password.py` yet since admin auth isn't built):
 
 ```
-uv sync                          # install deps
-python scripts/set_password.py   # create .env admin credentials
-alembic upgrade head              # run migrations
-python scripts/seed.py            # optional sample content
-tailwindcss -i styles/input.css -o app/static/css/site.css --watch   # terminal 1
-uvicorn app.main:app --reload     # terminal 2 -> http://localhost:8000
+uv sync                                                    # install Python deps
+npm install                                                # install Tailwind CLI (devDependency)
+python -m uv run alembic upgrade head                      # run migrations
+python -m uv run python scripts/seed.py                    # seed sample content (skips if DB already has content)
+npm run css:watch                                          # terminal 1: Tailwind watch build
+python -m uv run uvicorn app.main:app --reload --port 8000 # terminal 2 -> http://localhost:8000
 ```
 
-A `Makefile`/`justfile` should provide `make dev`, `make css`, `make test`, `make seed`. Tests run via `pytest` (see Testing below).
+No `Makefile`/`justfile` exists yet (per the spec, one should wrap these as `make dev`/`make css`/`make test`/`make seed`). No `scripts/set_password.py` yet either — that's part of the pending admin-auth work. Tests run via `pytest` once written (see Testing below); none exist yet.
 
 ## Architecture
 
