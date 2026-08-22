@@ -1,9 +1,0 @@
-.venv/
-__pycache__/
-*.pyc
-.env
-data/
-app/static/css/site.css
-.pytest_cache/
-node_modules/
-.claude/settings.local.json
