@@ -5,8 +5,6 @@ from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.db import get_db
-from app.routers.auth import SESSION_COOKIE
-from app.security import get_session_user
 from app.services.content import render_body
 from app.templating import templates
 
@@ -14,13 +12,12 @@ router = APIRouter(prefix="/admin")
 
 
 def require_admin(request: Request) -> sqlite3.Row:
-    token = request.cookies.get(SESSION_COOKIE)
-    if token:
-        with get_db() as conn:
-            user = get_session_user(conn, token)
-        if user is not None and user["is_admin"]:
-            return user
-    raise HTTPException(status_code=303, headers={"Location": "/admin/login"})
+    user = request.state.user
+    if user is not None and user["is_admin"]:
+        return user
+    raise HTTPException(
+        status_code=303, headers={"Location": "/login?next=/admin/courses"}
+    )
 
 
 def slugify(text: str) -> str:

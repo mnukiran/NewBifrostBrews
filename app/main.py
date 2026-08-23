@@ -1,12 +1,14 @@
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.gzip import GZipMiddleware
+from starlette.concurrency import run_in_threadpool
 from starlette.staticfiles import StaticFiles
 
 from app.config import STATIC_DIR
-from app.db import init_db
+from app.db import get_db, init_db
 from app.routers import admin, auth, public
+from app.security import get_session_user
 
 
 @asynccontextmanager
@@ -18,6 +20,21 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Bifrost Brews", docs_url=None, redoc_url=None, lifespan=lifespan)
 
 app.add_middleware(GZipMiddleware, minimum_size=500)
+
+
+def _lookup_user(token: str):
+    with get_db() as conn:
+        return get_session_user(conn, token)
+
+
+@app.middleware("http")
+async def attach_current_user(request: Request, call_next):
+    request.state.user = None
+    if not request.url.path.startswith("/static"):
+        token = request.cookies.get(auth.SESSION_COOKIE)
+        if token:
+            request.state.user = await run_in_threadpool(_lookup_user, token)
+    return await call_next(request)
 
 
 class CachedStaticFiles(StaticFiles):

@@ -52,9 +52,11 @@ Status legend: `[x]` done · `[ ]` pending · `[~]` in progress
       (done early — the Phase 1 `db.py` skeleton already sets them).
 
 ## Phase 3 — Forum
-- [ ] Decide account-creation mechanism (blocked on open question in
-      [[00-overview]]: admin-created accounts vs invite code).
-- [ ] Extend Phase 2 auth to regular (non-admin) forum users.
+- [x] Decide account-creation mechanism: self-signup at `/signup`, optional
+      invite-code gate via `BIFROST_INVITE_CODE` env var.
+- [x] Extend Phase 2 auth to regular (non-admin) forum users: shared
+      `/login` + `/signup` + `/logout`, current-user middleware, logged-in
+      state in the nav, forum page gated to members.
 - [ ] `categories`, `threads`, `posts` tables.
 - [ ] Category list → thread list → thread detail pages.
 - [ ] New thread / reply forms (htmx partial submit, no full reload).

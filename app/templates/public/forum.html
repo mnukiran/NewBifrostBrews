@@ -4,7 +4,15 @@
 
 {% block content %}
 <h1>Forum</h1>
+{% if request.state.user %}
 <div class="empty-state">
-  <p>The forum opens once the first courses are up. Pull up a chair.</p>
+  <p>Welcome, {{ request.state.user.username }} — you're in.
+     Threads and categories land in the next phase. Pull up a chair.</p>
 </div>
+{% else %}
+<div class="empty-state">
+  <p>The forum is for members.
+     <a href="/login?next=/forum">Log in</a> or <a href="/signup">sign up</a> to join in.</p>
+</div>
+{% endif %}
 {% endblock %}

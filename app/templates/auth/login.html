@@ -1,10 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Admin login · {{ site_name }}{% endblock %}
+{% block title %}Log in · {{ site_name }}{% endblock %}
 
 {% block content %}
-<h1>Admin login</h1>
-<form class="form" method="post" action="/admin/login">
+<h1>Log in</h1>
+<form class="form" method="post" action="/login">
+  <input type="hidden" name="next" value="{{ next }}">
   {% if error %}<p class="form__error">{{ error }}</p>{% endif %}
   <label class="form__field">
     <span>Username</span>
@@ -15,5 +16,6 @@
     <input name="password" type="password" autocomplete="current-password" required>
   </label>
   <button class="btn btn--primary">Log in</button>
+  <p class="meta">New here? <a href="/signup">Create an account.</a></p>
 </form>
 {% endblock %}

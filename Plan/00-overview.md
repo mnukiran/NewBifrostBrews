@@ -71,10 +71,10 @@ playback, and no janky half-styled pages. The design system in
 
 ## Explicit assumptions (flag if wrong)
 - Single community/forum (not multi-tenant across multiple companies).
-- Forum is for one company's informal internal use — **no open public
-  self-signup**. Working plan: per-user accounts (needed anyway so posts
-  have authors), created by the admin or via an invite code. The exact
-  mechanism is open question #1 below.
+- Forum uses per-user accounts with **self-signup** (decided 2026-08-23):
+  anyone can register at `/signup`. Setting the `BIFROST_INVITE_CODE` env
+  var makes signup require that code — leave it unset on LAN, set it
+  before exposing the site to the internet.
 - There is exactly one **admin** (the site owner) — the admin account is
   fully trusted, which is why admin-authored raw HTML/CSS/JS can be rendered
   without sanitization (see [[01-architecture]] "Admin content authoring").
@@ -88,9 +88,8 @@ playback, and no janky half-styled pages. The design system in
   typography, few decorative elements — not "bare/unstyled".
 
 ## Open questions for the user
-1. Forum account creation: admin creates each account, or an invite code
-   that lets coworkers self-register? (Open public signup is ruled out —
-   see assumptions.)
+1. ~~Forum account creation~~ — decided: self-signup, with an optional
+   invite-code gate via `BIFROST_INVITE_CODE` (see assumptions).
 2. Do you want the phone reachable from outside your home network (needs a
    tunnel/relay — see [[01-architecture]]), or is LAN-only fine for now?
-3. Tagline: pick one from [[04-branding]] (name itself is settled).
+3. ~~Tagline~~ — decided: "Learn AI. Brew conversation." ([[04-branding]]).
