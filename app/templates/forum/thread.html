@@ -22,6 +22,7 @@
   {% for post in posts %}{% include "forum/_post.html" %}{% endfor %}
 </div>
 
+{% if request.state.user %}
 <form class="form reply-form" method="post" action="/forum/t/{{ thread.id }}/reply"
       hx-post="/forum/t/{{ thread.id }}/reply"
       hx-target="#posts" hx-swap="beforeend"
@@ -34,4 +35,12 @@
   </label>
   <button class="btn btn--primary">Post reply</button>
 </form>
+{% else %}
+<div class="reply-form">
+{% with prompt_text="You're reading as a guest. Join to reply to this thread.",
+        prompt_next="/forum/t/" ~ thread.id %}
+{% include "forum/_join_prompt.html" %}
+{% endwith %}
+</div>
+{% endif %}
 {% endblock %}

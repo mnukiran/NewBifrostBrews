@@ -1,0 +1,9 @@
+{# Inline upgrade prompt shown to guests where members would act.
+   Context: prompt_text, prompt_next #}
+<div class="card guest-prompt">
+  <p>{{ prompt_text }}</p>
+  <p class="guest-prompt__actions">
+    <a class="btn btn--primary" href="/signup?next={{ prompt_next | urlencode }}">Sign up</a>
+    <a class="btn btn--ghost" href="/login?next={{ prompt_next | urlencode }}">Log in</a>
+  </p>
+</div>

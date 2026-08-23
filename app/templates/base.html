@@ -29,6 +29,11 @@
           <a class="meta" href="/account">{{ request.state.user.username }}</a>
           <form method="post" action="/logout"><button class="nav-btn">Log out</button></form>
         </li>
+        {% elif request.state.is_guest %}
+        <li class="site-nav__user">
+          <span class="meta">Guest</span>
+          <a class="nav-btn" href="/signup?next=/forum">Join</a>
+        </li>
         {% endif %}
       </ul>
     </div>

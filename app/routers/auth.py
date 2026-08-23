@@ -13,6 +13,7 @@ router = APIRouter()
 
 SESSION_COOKIE = "session"
 FLASH_COOKIE = "flash"
+GUEST_COOKIE = "guest"
 USERNAME_RE = re.compile(r"^[A-Za-z0-9_]{3,30}$")
 
 
@@ -49,6 +50,8 @@ def login_response(request: Request, token: str, next_url: str, message: str) ->
         samesite="lax",
         secure=COOKIE_SECURE,
     )
+    # A real account supersedes guest mode.
+    response.delete_cookie(GUEST_COOKIE)
     flash(response, message)
     return response
 
@@ -162,6 +165,23 @@ def signup(
         request, token, next,
         f"Welcome to Bifrost Brews, {username} — your account is ready.",
     )
+
+
+@router.get("/guest")
+def enter_guest_mode(request: Request, next: str = "/forum"):
+    next = safe_next(next)
+    if request.state.user is not None:
+        return RedirectResponse(next, status_code=303)
+    response = RedirectResponse(next, status_code=303)
+    response.set_cookie(
+        GUEST_COOKIE, "1",
+        max_age=60 * 60 * 24 * 30,
+        httponly=True,
+        samesite="lax",
+        secure=COOKIE_SECURE,
+    )
+    flash(response, "You're browsing as a guest — join anytime to post.")
+    return response
 
 
 @router.post("/logout")

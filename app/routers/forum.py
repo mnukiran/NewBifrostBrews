@@ -27,6 +27,17 @@ def require_member(request: Request) -> sqlite3.Row:
     )
 
 
+def require_viewer(request: Request) -> None:
+    """Members and guests may read; pure anonymous goes to the auth page
+    (whose card also offers guest mode)."""
+    if request.state.user is not None or request.state.is_guest:
+        return
+    raise HTTPException(
+        status_code=303,
+        headers={"Location": f"/login?next={quote(request.url.path)}"},
+    )
+
+
 def require_admin(request: Request) -> sqlite3.Row:
     user = request.state.user
     if user is not None and user["is_admin"]:
@@ -51,7 +62,7 @@ def index(request: Request):
                FROM categories c LEFT JOIN threads t ON t.category_id = c.id
                GROUP BY c.id ORDER BY c.sort"""
         ).fetchall()
-    if request.state.user is None:
+    if request.state.user is None and not request.state.is_guest:
         # Logged out: category teaser + inline auth card on one page.
         return templates.TemplateResponse(
             request,
@@ -66,7 +77,7 @@ def index(request: Request):
 
 
 @router.get("/c/{slug}")
-def category(request: Request, slug: str, user=Depends(require_member)):
+def category(request: Request, slug: str, _=Depends(require_viewer)):
     with get_db() as conn:
         cat = conn.execute(
             "SELECT * FROM categories WHERE slug = ?", (slug,)
@@ -161,7 +172,7 @@ def load_thread(conn: sqlite3.Connection, thread_id: int):
 
 
 @router.get("/t/{thread_id}")
-def thread_detail(request: Request, thread_id: int, user=Depends(require_member)):
+def thread_detail(request: Request, thread_id: int, _=Depends(require_viewer)):
     with get_db() as conn:
         thread, posts = load_thread(conn, thread_id)
     return templates.TemplateResponse(

@@ -7,6 +7,7 @@
 <h1>{{ category.name }}</h1>
 {% if category.description %}<p class="muted">{{ category.description }}</p>{% endif %}
 
+{% if request.state.user %}
 <details class="new-thread" {% if error %}open{% endif %}>
   <summary class="btn btn--primary">New thread</summary>
   <form class="form" method="post" action="/forum/c/{{ category.slug }}/threads">
@@ -22,6 +23,12 @@
     <button class="btn btn--primary">Post thread</button>
   </form>
 </details>
+{% else %}
+{% with prompt_text="You're reading as a guest. Join to start a thread.",
+        prompt_next="/forum/c/" ~ category.slug %}
+{% include "forum/_join_prompt.html" %}
+{% endwith %}
+{% endif %}
 
 {% if threads %}
 <ul class="forum-list">

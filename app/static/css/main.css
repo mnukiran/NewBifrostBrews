@@ -587,6 +587,25 @@ p + p {
   margin: 32px auto 0;
 }
 
+.auth-card__guest {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.guest-prompt {
+  margin: 24px 0;
+  text-align: center;
+  padding: 24px;
+}
+.guest-prompt__actions {
+  margin-top: 12px;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
 .flash {
   background: color-mix(in srgb, var(--accent) 10%, var(--surface));
   border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));

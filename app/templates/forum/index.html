@@ -4,6 +4,10 @@
 
 {% block content %}
 <h1>Forum</h1>
+{% if not request.state.user %}
+<p class="meta">You're browsing as a guest —
+  <a href="/signup?next=/forum">join</a> to post.</p>
+{% endif %}
 <ul class="forum-list">
   {% for c in categories %}
   <li class="card forum-list__row">

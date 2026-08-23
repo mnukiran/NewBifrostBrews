@@ -32,10 +32,13 @@ def _lookup_user(token: str):
 async def attach_current_user(request: Request, call_next):
     request.state.user = None
     request.state.flash = None
+    request.state.is_guest = False
     if not request.url.path.startswith("/static"):
         token = request.cookies.get(auth.SESSION_COOKIE)
         if token:
             request.state.user = await run_in_threadpool(_lookup_user, token)
+        if request.state.user is None:
+            request.state.is_guest = bool(request.cookies.get(auth.GUEST_COOKIE))
         raw_flash = request.cookies.get(auth.FLASH_COOKIE)
         if raw_flash:
             request.state.flash = unquote(raw_flash)

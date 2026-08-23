@@ -57,4 +57,7 @@
     <p class="meta">Already have one?
       <a href="/login?next={{ next | urlencode }}" @click.prevent="mode = 'login'">Log in.</a></p>
   </form>
+
+  <p class="meta auth-card__guest">Just looking?
+    <a href="/guest?next={{ next | urlencode }}">Continue as a guest →</a></p>
 </div>
