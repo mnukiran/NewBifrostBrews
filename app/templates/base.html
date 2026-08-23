@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ site_name }}{% endblock %}</title>
+  <meta name="description" content="{{ site_name }} — {{ tagline }}">
+  <link rel="icon" href="/static/img/favicon-32.png?v={{ asset_v }}">
+  <link rel="preload" href="/static/fonts/inter-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/static/css/main.css?v={{ asset_v }}">
+  <script src="/static/js/alpine.min.js?v={{ asset_v }}" defer></script>
+</head>
+<body>
+  <nav class="site-nav" x-data="{ open: false }">
+    <div class="site-nav__inner">
+      <a class="site-nav__brand" href="/">{{ site_name }}</a>
+      <button class="site-nav__toggle" @click="open = !open"
+              :aria-expanded="open" aria-controls="nav-links">Menu</button>
+      <ul class="site-nav__links" id="nav-links" :class="{ 'is-open': open }">
+        <li><a href="/" {% if active == "home" %}aria-current="page"{% endif %}>Home</a></li>
+        <li><a href="/courses" {% if active == "courses" %}aria-current="page"{% endif %}>Courses</a></li>
+        <li><a href="/forum" {% if active == "forum" %}aria-current="page"{% endif %}>Forum</a></li>
+        <li><a href="/about" {% if active == "about" %}aria-current="page"{% endif %}>About</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main{% if wide %} class="wide"{% endif %}>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    {{ site_name }} · {{ tagline }}
+  </footer>
+</body>
+</html>
