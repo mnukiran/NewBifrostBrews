@@ -17,20 +17,20 @@ Status legend: `[x]` done · `[ ]` pending · `[~]` in progress
       [[00-overview]] (forum account creation, LAN-only vs tunnel, tagline).
 
 ## Phase 1 — Site shell
-- [ ] New `pyproject.toml` from scratch (fastapi, uvicorn, jinja2 — no
+- [x] New `pyproject.toml` from scratch (fastapi, uvicorn, jinja2 — no
       alembic/ORM per [[01-architecture]]).
-- [ ] `app/main.py` + `app/config.py` + `app/db.py` skeleton.
-- [ ] Base template (`base.html`) with nav, footer, design tokens as CSS
+- [x] `app/main.py` + `app/config.py` + `app/db.py` skeleton.
+- [x] Base template (`base.html`) with nav, footer, design tokens as CSS
       custom properties from [[02-ui-design]].
-- [ ] Home page.
-- [ ] About page.
-- [ ] Empty/"coming soon" placeholder pages for Courses and Forum.
-- [ ] Light/dark theme via `prefers-color-scheme`.
-- [ ] Vendor htmx.min.js + Alpine.min.js + fonts (recover from git history
+- [x] Home page.
+- [x] About page.
+- [x] Empty/"coming soon" placeholder pages for Courses and Forum.
+- [x] Light/dark theme via `prefers-color-scheme`.
+- [x] Vendor htmx.min.js + Alpine.min.js + fonts (recover from git history
       — e.g. `git show f57464e:app/static/...` — or re-fetch fresh).
-- [ ] GZip middleware + static-asset cache headers ([[01-architecture]]
+- [x] GZip middleware + static-asset cache headers ([[01-architecture]]
       "Performance & UX practices").
-- [ ] Smoke-test locally on laptop (`uvicorn app.main:app --reload`).
+- [x] Smoke-test locally on laptop (`uvicorn app.main:app --reload`).
 
 ## Phase 2 — Courses section + admin editor (no real content yet)
 - [ ] `courses` table/schema (content stored in SQLite: `body_html`,
@@ -48,7 +48,8 @@ Status legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [ ] YouTube embed support: responsive 16:9 facade component (thumbnail +
       play button → swaps to `youtube-nocookie.com` iframe, plays in-page)
       and `{{yt:VIDEO_ID}}` shortcode expansion in the content service.
-- [ ] SQLite `PRAGMA journal_mode=WAL` + `synchronous=NORMAL` in `db.py`.
+- [x] SQLite `PRAGMA journal_mode=WAL` + `synchronous=NORMAL` in `db.py`
+      (done early — the Phase 1 `db.py` skeleton already sets them).
 
 ## Phase 3 — Forum
 - [ ] Decide account-creation mechanism (blocked on open question in
