@@ -507,6 +507,18 @@ p + p {
   background: var(--bg);
 }
 
+.flash {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 24px;
+  font-size: var(--fs-meta);
+}
+.flash code {
+  user-select: all;
+}
+
 /* ---- Forum ---- */
 
 .forum-list {

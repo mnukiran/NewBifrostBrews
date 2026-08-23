@@ -68,10 +68,11 @@ def category(request: Request, slug: str, user=Depends(require_member)):
         if cat is None:
             raise HTTPException(status_code=404)
         threads = conn.execute(
-            """SELECT t.id, t.title, t.updated_at, u.username,
+            """SELECT t.id, t.title, t.updated_at,
+                      COALESCE(u.username, '[deleted]') AS username,
                       COUNT(p.id) - 1 AS reply_count
                FROM threads t
-               JOIN users u ON u.id = t.user_id
+               LEFT JOIN users u ON u.id = t.user_id
                LEFT JOIN posts p ON p.thread_id = t.id AND p.hidden = 0
                WHERE t.category_id = ?
                GROUP BY t.id ORDER BY t.updated_at DESC""",
@@ -108,9 +109,10 @@ def create_thread(
             error = f"Slow down — wait {POST_COOLDOWN_SECONDS}s between posts."
         if error:
             threads = conn.execute(
-                """SELECT t.id, t.title, t.updated_at, u.username,
+                """SELECT t.id, t.title, t.updated_at,
+                      COALESCE(u.username, '[deleted]') AS username,
                           COUNT(p.id) - 1 AS reply_count
-                   FROM threads t JOIN users u ON u.id = t.user_id
+                   FROM threads t LEFT JOIN users u ON u.id = t.user_id
                    LEFT JOIN posts p ON p.thread_id = t.id AND p.hidden = 0
                    WHERE t.category_id = ? GROUP BY t.id
                    ORDER BY t.updated_at DESC""",
@@ -144,8 +146,8 @@ def load_thread(conn: sqlite3.Connection, thread_id: int):
     if thread is None:
         raise HTTPException(status_code=404)
     posts = conn.execute(
-        """SELECT p.*, u.username FROM posts p
-           JOIN users u ON u.id = p.user_id
+        """SELECT p.*, COALESCE(u.username, '[deleted]') AS username FROM posts p
+           LEFT JOIN users u ON u.id = p.user_id
            WHERE p.thread_id = ? ORDER BY p.created_at, p.id""",
         (thread_id,),
     ).fetchall()
@@ -209,8 +211,8 @@ def reply(
             (thread_id,),
         )
         post = conn.execute(
-            """SELECT p.*, u.username FROM posts p
-               JOIN users u ON u.id = p.user_id WHERE p.id = ?""",
+            """SELECT p.*, COALESCE(u.username, '[deleted]') AS username FROM posts p
+               LEFT JOIN users u ON u.id = p.user_id WHERE p.id = ?""",
             (cur.lastrowid,),
         ).fetchone()
     if is_htmx:

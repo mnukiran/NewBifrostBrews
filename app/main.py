@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+from urllib.parse import unquote
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.gzip import GZipMiddleware
@@ -30,11 +31,24 @@ def _lookup_user(token: str):
 @app.middleware("http")
 async def attach_current_user(request: Request, call_next):
     request.state.user = None
+    request.state.flash = None
     if not request.url.path.startswith("/static"):
         token = request.cookies.get(auth.SESSION_COOKIE)
         if token:
             request.state.user = await run_in_threadpool(_lookup_user, token)
-    return await call_next(request)
+        raw_flash = request.cookies.get(auth.FLASH_COOKIE)
+        if raw_flash:
+            request.state.flash = unquote(raw_flash)
+    response = await call_next(request)
+    # A flash message is shown once: the page render that consumed it
+    # also clears the cookie.
+    sets_new_flash = any(
+        h.startswith(auth.FLASH_COOKIE + "=")
+        for h in response.headers.getlist("set-cookie")
+    )
+    if request.state.flash is not None and not sets_new_flash:
+        response.delete_cookie(auth.FLASH_COOKIE)
+    return response
 
 
 class CachedStaticFiles(StaticFiles):

@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Your account · {{ site_name }}{% endblock %}
+
+{% block content %}
+<h1>Your account</h1>
+<p>
+  Signed in as <strong>{{ user.username }}</strong>
+  {% if user.is_admin %}<span class="pill pill--live">admin</span>{% endif %}
+</p>
+<p class="meta">Member since {{ user.created_at }} UTC.</p>
+
+<h2>Change password</h2>
+<form class="form" method="post" action="/account/password">
+  {% if error %}<p class="form__error">{{ error }}</p>{% endif %}
+  <label class="form__field">
+    <span>Current password</span>
+    <input name="current_password" type="password" autocomplete="current-password" required>
+  </label>
+  <label class="form__field">
+    <span>New password <span class="muted">(at least 8 characters)</span></span>
+    <input name="password" type="password" autocomplete="new-password" required minlength="8">
+  </label>
+  <label class="form__field">
+    <span>Confirm new password</span>
+    <input name="password_confirm" type="password" autocomplete="new-password" required minlength="8">
+  </label>
+  <button class="btn btn--primary">Update password</button>
+  <p class="meta">Changing your password logs you out everywhere else.</p>
+</form>
+{% endblock %}

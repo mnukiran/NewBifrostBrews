@@ -26,10 +26,12 @@ CREATE TABLE IF NOT EXISTS categories (
   sort        INTEGER NOT NULL DEFAULT 0
 );
 
+-- user_id is nullable: deleting an account keeps its posts/threads,
+-- shown with a "[deleted]" author.
 CREATE TABLE IF NOT EXISTS threads (
   id          INTEGER PRIMARY KEY,
   category_id INTEGER NOT NULL REFERENCES categories(id) ON DELETE CASCADE,
-  user_id     INTEGER NOT NULL REFERENCES users(id),
+  user_id     INTEGER REFERENCES users(id) ON DELETE SET NULL,
   title       TEXT NOT NULL,
   created_at  TEXT NOT NULL DEFAULT (datetime('now')),
   updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
@@ -38,7 +40,7 @@ CREATE TABLE IF NOT EXISTS threads (
 CREATE TABLE IF NOT EXISTS posts (
   id         INTEGER PRIMARY KEY,
   thread_id  INTEGER NOT NULL REFERENCES threads(id) ON DELETE CASCADE,
-  user_id    INTEGER NOT NULL REFERENCES users(id),
+  user_id    INTEGER REFERENCES users(id) ON DELETE SET NULL,
   body       TEXT NOT NULL,
   hidden     INTEGER NOT NULL DEFAULT 0,
   created_at TEXT NOT NULL DEFAULT (datetime('now'))

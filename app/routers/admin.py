@@ -1,10 +1,12 @@
 import re
+import secrets
 import sqlite3
 
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.db import get_db
+from app.security import hash_password
 from app.services.content import render_body
 from app.templating import templates
 
@@ -118,6 +120,65 @@ def delete_course(course_id: int, user=Depends(require_admin)):
     with get_db() as conn:
         conn.execute("DELETE FROM courses WHERE id = ?", (course_id,))
     return RedirectResponse("/admin/courses", status_code=303)
+
+
+@router.get("/users")
+def user_list(request: Request, user=Depends(require_admin)):
+    with get_db() as conn:
+        users = conn.execute(
+            """SELECT u.*, COUNT(p.id) AS post_count
+               FROM users u LEFT JOIN posts p ON p.user_id = u.id
+               GROUP BY u.id ORDER BY u.created_at"""
+        ).fetchall()
+    return templates.TemplateResponse(
+        request,
+        "admin/users.html",
+        {"users": users, "user": user, "reset_user": None, "temp_password": None},
+    )
+
+
+@router.post("/users/{user_id}/reset-password")
+def reset_user_password(request: Request, user_id: int, user=Depends(require_admin)):
+    temp_password = secrets.token_urlsafe(9)
+    with get_db() as conn:
+        target = conn.execute(
+            "SELECT * FROM users WHERE id = ?", (user_id,)
+        ).fetchone()
+        if target is None:
+            raise HTTPException(status_code=404)
+        conn.execute(
+            "UPDATE users SET password_hash = ? WHERE id = ?",
+            (hash_password(temp_password), user_id),
+        )
+        # Their old sessions are no longer trustworthy.
+        conn.execute("DELETE FROM sessions WHERE user_id = ?", (user_id,))
+        users = conn.execute(
+            """SELECT u.*, COUNT(p.id) AS post_count
+               FROM users u LEFT JOIN posts p ON p.user_id = u.id
+               GROUP BY u.id ORDER BY u.created_at"""
+        ).fetchall()
+    return templates.TemplateResponse(
+        request,
+        "admin/users.html",
+        {"users": users, "user": user,
+         "reset_user": target["username"], "temp_password": temp_password},
+    )
+
+
+@router.post("/users/{user_id}/delete")
+def delete_user(request: Request, user_id: int, user=Depends(require_admin)):
+    with get_db() as conn:
+        target = conn.execute(
+            "SELECT * FROM users WHERE id = ?", (user_id,)
+        ).fetchone()
+        if target is None:
+            raise HTTPException(status_code=404)
+        if target["is_admin"]:
+            raise HTTPException(status_code=400, detail="Admins can't be deleted here.")
+        # Their posts/threads survive with a "[deleted]" author
+        # (user_id has ON DELETE SET NULL); sessions cascade away.
+        conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+    return RedirectResponse("/admin/users", status_code=303)
 
 
 @router.post("/courses/preview", response_class=HTMLResponse)

@@ -4,18 +4,23 @@
 
 {% block content %}
 <h1>Log in</h1>
-<form class="form" method="post" action="/login">
+{% if next != "/" %}
+<p class="muted">Log in to continue to <code>{{ next }}</code>.</p>
+{% endif %}
+<form class="form" method="post" action="/login" style="margin-top: 24px;">
   <input type="hidden" name="next" value="{{ next }}">
   {% if error %}<p class="form__error">{{ error }}</p>{% endif %}
   <label class="form__field">
     <span>Username</span>
-    <input name="username" autocomplete="username" required autofocus>
+    <input name="username" autocomplete="username" required autofocus
+           value="{{ username }}">
   </label>
   <label class="form__field">
     <span>Password</span>
     <input name="password" type="password" autocomplete="current-password" required>
   </label>
   <button class="btn btn--primary">Log in</button>
-  <p class="meta">New here? <a href="/signup">Create an account.</a></p>
+  <p class="meta">New here?
+    <a href="/signup?next={{ next | urlencode }}">Create an account.</a></p>
 </form>
 {% endblock %}
