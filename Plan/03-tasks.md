@@ -13,8 +13,9 @@ Status legend: `[x]` done · `[ ]` pending · `[~]` in progress
       + vendored assets remain recoverable from git history).
 - [x] Fold in hosting/UX requirements: OnePlus 7T target, admin HTML/CSS/JS
       content editor, in-page YouTube playback.
-- [ ] User reviews these docs and answers the open questions in
-      [[00-overview]] (forum account creation, LAN-only vs tunnel, tagline).
+- [ ] Remaining open question in [[00-overview]]: LAN-only vs
+      internet-reachable (decide before Phase 4; account creation and
+      tagline are settled).
 
 ## Phase 1 — Site shell
 - [x] New `pyproject.toml` from scratch (fastapi, uvicorn, jinja2 — no
@@ -60,8 +61,8 @@ Status legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] `categories`, `threads`, `posts` tables (seeded default categories).
 - [x] Category list → thread list → thread detail pages.
 - [x] New thread / reply forms (htmx partial submit, no full reload).
-- [x] Basic abuse safeguard (15s post cooldown + admin hide/unhide post + delete thread) (rate-limit posting, or at minimum a way to
-      delete/hide a post as the admin) — not full moderation tooling.
+- [x] Basic abuse safeguard: 15s per-user post cooldown, admin can
+      hide/unhide posts and delete threads — not full moderation tooling.
 
 ## Phase 4 — Deploy to phone (Termux on the OnePlus 7T)
 - [ ] Install Termux + required packages (python, sqlite, termux-services,
