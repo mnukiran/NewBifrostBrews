@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}{{ course.title }} · {{ site_name }}{% endblock %}
+
+{% block head %}
+{% if course.custom_css %}<style>{{ course.custom_css | safe }}</style>{% endif %}
+{% endblock %}
+
+{% block content %}
+<article>
+  <h1>{{ course.title }}</h1>
+  <p class="meta course-meta">
+    {% if course.provider %}<span>{{ course.provider }}</span>{% endif %}
+    {% if course.url %}<a href="{{ course.url }}" rel="noopener">Course link ↗</a>{% endif %}
+    {% if course.tags %}
+      {% for tag in course.tags.split(",") %}{% if tag.strip() %}<span class="pill">{{ tag.strip() }}</span>{% endif %}{% endfor %}
+    {% endif %}
+  </p>
+
+  {# Admin-authored HTML: rendered unescaped by design — single trusted
+     author. See Plan/01-architecture.md "Admin content authoring". #}
+  <div class="course-content">
+    {{ rendered_body | safe }}
+  </div>
+</article>
+<script src="/static/js/yt-embed.js?v={{ asset_v }}" defer></script>
+{% if course.custom_js %}<script>{{ course.custom_js | safe }}</script>{% endif %}
+{% endblock %}

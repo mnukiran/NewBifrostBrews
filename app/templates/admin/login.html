@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Admin login · {{ site_name }}{% endblock %}
+
+{% block content %}
+<h1>Admin login</h1>
+<form class="form" method="post" action="/admin/login">
+  {% if error %}<p class="form__error">{{ error }}</p>{% endif %}
+  <label class="form__field">
+    <span>Username</span>
+    <input name="username" autocomplete="username" required autofocus>
+  </label>
+  <label class="form__field">
+    <span>Password</span>
+    <input name="password" type="password" autocomplete="current-password" required>
+  </label>
+  <button class="btn btn--primary">Log in</button>
+</form>
+{% endblock %}

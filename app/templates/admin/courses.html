@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Admin · {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <h1>Courses</h1>
+  <div class="admin-header__actions">
+    <a class="btn btn--primary" href="/admin/courses/new">New course</a>
+    <form method="post" action="/admin/logout">
+      <button class="btn btn--ghost">Log out ({{ user.username }})</button>
+    </form>
+  </div>
+</div>
+
+{% if courses %}
+<ul class="admin-list">
+  {% for c in courses %}
+  <li class="card admin-list__row">
+    <div>
+      <a href="/admin/courses/{{ c.id }}/edit"><strong>{{ c.title }}</strong></a>
+      <span class="pill {{ 'pill--live' if c.published else '' }}">
+        {{ "Published" if c.published else "Draft" }}</span>
+      <p class="meta">/courses/{{ c.slug }} · updated {{ c.updated_at }}</p>
+    </div>
+    <div class="admin-list__actions">
+      {% if c.published %}<a class="btn btn--ghost" href="/courses/{{ c.slug }}">View</a>{% endif %}
+      <a class="btn btn--ghost" href="/admin/courses/{{ c.id }}/edit">Edit</a>
+      <form method="post" action="/admin/courses/{{ c.id }}/delete"
+            onsubmit="return confirm('Delete “{{ c.title }}” permanently?')">
+        <button class="btn btn--ghost btn--danger">Delete</button>
+      </form>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="empty-state">
+  <p>No courses yet. <a href="/admin/courses/new">Create the first one.</a></p>
+</div>
+{% endif %}
+{% endblock %}

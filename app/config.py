@@ -11,4 +11,4 @@ SITE_NAME = "Bifrost Brews"
 TAGLINE = "Learn AI. Brew conversation."
 
 # Bump when static assets change so far-future-cached clients refetch.
-ASSET_VERSION = "1"
+ASSET_VERSION = "2"

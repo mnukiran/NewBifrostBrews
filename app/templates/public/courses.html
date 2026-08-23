@@ -4,7 +4,24 @@
 
 {% block content %}
 <h1>Courses</h1>
+{% if courses %}
+<div class="card-grid">
+  {% for c in courses %}
+  <a class="card card--link" href="/courses/{{ c.slug }}">
+    <h2 class="card__title">{{ c.title }}</h2>
+    {% if c.provider %}<p class="meta">{{ c.provider }}</p>{% endif %}
+    {% if c.summary %}<p class="card__summary">{{ c.summary }}</p>{% endif %}
+    {% if c.tags %}
+    <p class="card__tags">
+      {% for tag in c.tags.split(",") %}{% if tag.strip() %}<span class="pill">{{ tag.strip() }}</span>{% endif %}{% endfor %}
+    </p>
+    {% endif %}
+  </a>
+  {% endfor %}
+</div>
+{% else %}
 <div class="empty-state">
   <p>Course notes are still brewing. Check back soon.</p>
 </div>
+{% endif %}
 {% endblock %}

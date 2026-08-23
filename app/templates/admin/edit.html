@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}{{ "Edit: " ~ course.title if course else "New course" }} · {{ site_name }}{% endblock %}
+
+{% block content %}
+<div class="admin-header">
+  <h1>{{ "Edit course" if course else "New course" }}</h1>
+  <a class="btn btn--ghost" href="/admin/courses">Back to list</a>
+</div>
+
+<form class="form editor" id="course-form" method="post" action="/admin/courses/save">
+  {% if course %}<input type="hidden" name="course_id" value="{{ course.id }}">{% endif %}
+
+  <div class="editor__meta">
+    <label class="form__field">
+      <span>Title</span>
+      <input name="title" required value="{{ course.title if course else '' }}">
+    </label>
+    <label class="form__field">
+      <span>Slug <span class="muted">(blank = from title)</span></span>
+      <input name="slug" value="{{ course.slug if course else '' }}">
+    </label>
+    <label class="form__field">
+      <span>Provider</span>
+      <input name="provider" value="{{ course.provider if course else '' }}">
+    </label>
+    <label class="form__field">
+      <span>Course URL</span>
+      <input name="url" type="url" value="{{ course.url if course else '' }}">
+    </label>
+    <label class="form__field">
+      <span>Tags <span class="muted">(comma-separated)</span></span>
+      <input name="tags" value="{{ course.tags if course else '' }}">
+    </label>
+    <label class="form__field">
+      <span>Summary <span class="muted">(shown on the course card)</span></span>
+      <input name="summary" value="{{ course.summary if course else '' }}">
+    </label>
+  </div>
+
+  <label class="form__field">
+    <span>Body HTML <span class="muted">— use <code>{{ '{{yt:VIDEO_ID}}' }}</code> for an in-page YouTube embed</span></span>
+    <textarea name="body_html" rows="16" class="editor__code" spellcheck="false">{{ course.body_html if course else '' }}</textarea>
+  </label>
+  <label class="form__field">
+    <span>Custom CSS <span class="muted">— scope selectors under <code>.course-content</code></span></span>
+    <textarea name="custom_css" rows="6" class="editor__code" spellcheck="false">{{ course.custom_css if course else '' }}</textarea>
+  </label>
+  <label class="form__field">
+    <span>Custom JS</span>
+    <textarea name="custom_js" rows="6" class="editor__code" spellcheck="false">{{ course.custom_js if course else '' }}</textarea>
+  </label>
+
+  <div class="editor__actions">
+    <button class="btn btn--primary">Save</button>
+    <button type="button" class="btn btn--ghost" id="preview-btn">Preview</button>
+    <label class="editor__publish">
+      <input type="checkbox" name="published" value="1"
+             {{ "checked" if course and course.published else "" }}>
+      Published
+    </label>
+    <span class="meta" id="dirty-flag" hidden>Unsaved changes</span>
+  </div>
+</form>
+
+<h2>Preview</h2>
+<iframe id="preview-frame" class="preview-frame" title="Course preview"></iframe>
+
+<script>
+  var form = document.getElementById("course-form");
+  var frame = document.getElementById("preview-frame");
+
+  document.getElementById("preview-btn").addEventListener("click", function () {
+    fetch("/admin/courses/preview", { method: "POST", body: new FormData(form) })
+      .then(function (r) { return r.text(); })
+      .then(function (html) { frame.srcdoc = html; });
+  });
+
+  form.addEventListener("input", function () {
+    document.getElementById("dirty-flag").hidden = false;
+  });
+</script>
+{% endblock %}

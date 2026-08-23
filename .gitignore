@@ -7,3 +7,5 @@ venv/
 .env
 .uv/
 uv.lock
+*.db-shm
+*.db-wal

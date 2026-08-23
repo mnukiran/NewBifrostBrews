@@ -33,19 +33,19 @@ Status legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] Smoke-test locally on laptop (`uvicorn app.main:app --reload`).
 
 ## Phase 2 — Courses section + admin editor (no real content yet)
-- [ ] `courses` table/schema (content stored in SQLite: `body_html`,
+- [x] `courses` table/schema (content stored in SQLite: `body_html`,
       `custom_css`, `custom_js`, `published` — see [[01-architecture]]
       "Admin content authoring").
-- [ ] `users` table + scrypt password hashing + session cookie auth for the
+- [x] `users` table + scrypt password hashing + session cookie auth for the
       single admin account (Phase 3 reuses this for forum users).
-- [ ] Admin router + login page.
-- [ ] Admin course editor: HTML/CSS/JS textareas, htmx live preview,
+- [x] Admin router + login page.
+- [x] Admin course editor: HTML/CSS/JS textareas, htmx live preview,
       draft/publish toggle ([[02-ui-design]] "Admin editor").
-- [ ] Course list page (grid of cards, using [[02-ui-design]] card
+- [x] Course list page (grid of cards, using [[02-ui-design]] card
       component; published courses only).
-- [ ] Course detail page rendering admin content (unescaped `body_html` in
+- [x] Course detail page rendering admin content (unescaped `body_html` in
       a `.course-content` container + scoped custom CSS/JS).
-- [ ] YouTube embed support: responsive 16:9 facade component (thumbnail +
+- [x] YouTube embed support: responsive 16:9 facade component (thumbnail +
       play button → swaps to `youtube-nocookie.com` iframe, plays in-page)
       and `{{yt:VIDEO_ID}}` shortcode expansion in the content service.
 - [x] SQLite `PRAGMA journal_mode=WAL` + `synchronous=NORMAL` in `db.py`

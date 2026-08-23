@@ -1,11 +1,21 @@
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.gzip import GZipMiddleware
 from starlette.staticfiles import StaticFiles
 
 from app.config import STATIC_DIR
-from app.routers import public
+from app.db import init_db
+from app.routers import admin, auth, public
 
-app = FastAPI(title="Bifrost Brews", docs_url=None, redoc_url=None)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+
+app = FastAPI(title="Bifrost Brews", docs_url=None, redoc_url=None, lifespan=lifespan)
 
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
@@ -23,3 +33,5 @@ class CachedStaticFiles(StaticFiles):
 app.mount("/static", CachedStaticFiles(directory=STATIC_DIR), name="static")
 
 app.include_router(public.router)
+app.include_router(auth.router)
+app.include_router(admin.router)
