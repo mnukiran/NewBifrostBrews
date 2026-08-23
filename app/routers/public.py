@@ -45,11 +45,6 @@ def course_detail(request: Request, slug: str):
     )
 
 
-@router.get("/forum")
-def forum(request: Request):
-    return templates.TemplateResponse(request, "public/forum.html", {"active": "forum"})
-
-
 @router.get("/about")
 def about(request: Request):
     return templates.TemplateResponse(request, "public/about.html", {"active": "about"})

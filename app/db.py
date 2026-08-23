@@ -30,7 +30,19 @@ def get_db():
         conn.close()
 
 
+DEFAULT_CATEGORIES = [
+    ("general", "General", "Anything and everything.", 0),
+    ("courses", "Course talk", "Discuss the Gen AI courses on the site.", 1),
+    ("water-cooler", "Water cooler", "Off-topic chatter and gossip.", 2),
+]
+
+
 def init_db() -> None:
     DB_PATH.parent.mkdir(parents=True, exist_ok=True)
     with get_db() as conn:
         conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
+        if conn.execute("SELECT COUNT(*) FROM categories").fetchone()[0] == 0:
+            conn.executemany(
+                "INSERT INTO categories (slug, name, description, sort) VALUES (?, ?, ?, ?)",
+                DEFAULT_CATEGORIES,
+            )

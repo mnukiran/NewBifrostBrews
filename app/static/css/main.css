@@ -507,6 +507,82 @@ p + p {
   background: var(--bg);
 }
 
+/* ---- Forum ---- */
+
+.forum-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+}
+.forum-list__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.forum-list__title {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.new-thread {
+  margin: 24px 0;
+}
+.new-thread summary {
+  display: inline-block;
+  cursor: pointer;
+  list-style: none;
+}
+.new-thread summary::-webkit-details-marker {
+  display: none;
+}
+.new-thread form {
+  margin-top: 16px;
+}
+
+.thread-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.post {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-top: 12px;
+}
+.post--hidden {
+  opacity: 0.6;
+  border-style: dashed;
+}
+.post__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.post__meta strong {
+  color: var(--text);
+}
+.post__body {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.reply-form {
+  margin-top: 32px;
+}
+.reply-form h2 {
+  margin: 0;
+}
+
 /* ---- Course content (admin-authored HTML renders in here) ---- */
 
 .course-meta {

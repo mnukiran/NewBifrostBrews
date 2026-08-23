@@ -15,4 +15,4 @@ TAGLINE = "Learn AI. Brew conversation."
 INVITE_CODE = os.environ.get("BIFROST_INVITE_CODE", "").strip()
 
 # Bump when static assets change so far-future-cached clients refetch.
-ASSET_VERSION = "3"
+ASSET_VERSION = "4"

@@ -1,0 +1,17 @@
+<article class="post {% if post.hidden %}post--hidden{% endif %}" id="post-{{ post.id }}">
+  <header class="post__meta meta">
+    <strong>{{ post.username }}</strong>
+    <span>{{ post.created_at }} UTC</span>
+    {% if post.hidden %}<span class="pill">hidden</span>{% endif %}
+    {% if request.state.user and request.state.user.is_admin %}
+    <form method="post" action="/forum/posts/{{ post.id }}/toggle-hidden">
+      <button class="nav-btn">{{ "Unhide" if post.hidden else "Hide" }}</button>
+    </form>
+    {% endif %}
+  </header>
+  {% if not post.hidden or (request.state.user and request.state.user.is_admin) %}
+  <div class="post__body">{{ post.body }}</div>
+  {% else %}
+  <div class="post__body muted">This post was hidden by a moderator.</div>
+  {% endif %}
+</article>

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Forum · {{ site_name }}{% endblock %}
+
+{% block content %}
+<h1>Forum</h1>
+<ul class="forum-list">
+  {% for c in categories %}
+  <li class="card forum-list__row">
+    <div>
+      <a class="forum-list__title" href="/forum/c/{{ c.slug }}">{{ c.name }}</a>
+      {% if c.description %}<p class="meta">{{ c.description }}</p>{% endif %}
+    </div>
+    <span class="pill">{{ c.thread_count }} thread{{ "s" if c.thread_count != 1 else "" }}</span>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

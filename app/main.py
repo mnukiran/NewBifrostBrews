@@ -7,7 +7,7 @@ from starlette.staticfiles import StaticFiles
 
 from app.config import STATIC_DIR
 from app.db import get_db, init_db
-from app.routers import admin, auth, public
+from app.routers import admin, auth, forum, public
 from app.security import get_session_user
 
 
@@ -52,3 +52,4 @@ app.mount("/static", CachedStaticFiles(directory=STATIC_DIR), name="static")
 app.include_router(public.router)
 app.include_router(auth.router)
 app.include_router(admin.router)
+app.include_router(forum.router)

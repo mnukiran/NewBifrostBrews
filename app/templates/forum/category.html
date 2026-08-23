@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}{{ category.name }} · {{ site_name }}{% endblock %}
+
+{% block content %}
+<p class="meta"><a href="/forum">Forum</a> / {{ category.name }}</p>
+<h1>{{ category.name }}</h1>
+{% if category.description %}<p class="muted">{{ category.description }}</p>{% endif %}
+
+<details class="new-thread" {% if error %}open{% endif %}>
+  <summary class="btn btn--primary">New thread</summary>
+  <form class="form" method="post" action="/forum/c/{{ category.slug }}/threads">
+    {% if error %}<p class="form__error">{{ error }}</p>{% endif %}
+    <label class="form__field">
+      <span>Title</span>
+      <input name="title" required maxlength="200">
+    </label>
+    <label class="form__field">
+      <span>Message</span>
+      <textarea name="body" rows="6" required maxlength="10000"></textarea>
+    </label>
+    <button class="btn btn--primary">Post thread</button>
+  </form>
+</details>
+
+{% if threads %}
+<ul class="forum-list">
+  {% for t in threads %}
+  <li class="card forum-list__row">
+    <div>
+      <a class="forum-list__title" href="/forum/t/{{ t.id }}">{{ t.title }}</a>
+      <p class="meta">by {{ t.username }} · last activity {{ t.updated_at }} UTC</p>
+    </div>
+    <span class="pill">{{ t.reply_count }} repl{{ "y" if t.reply_count == 1 else "ies" }}</span>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<div class="empty-state">
+  <p>No threads here yet — start the first one.</p>
+</div>
+{% endif %}
+{% endblock %}

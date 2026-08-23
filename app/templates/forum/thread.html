@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}{{ thread.title }} · {{ site_name }}{% endblock %}
+
+{% block content %}
+<p class="meta">
+  <a href="/forum">Forum</a> /
+  <a href="/forum/c/{{ thread.category_slug }}">{{ thread.category_name }}</a> /
+  {{ thread.title }}
+</p>
+<div class="thread-header">
+  <h1>{{ thread.title }}</h1>
+  {% if request.state.user and request.state.user.is_admin %}
+  <form method="post" action="/forum/t/{{ thread.id }}/delete"
+        onsubmit="return confirm('Delete this whole thread permanently?')">
+    <button class="btn btn--ghost btn--danger">Delete thread</button>
+  </form>
+  {% endif %}
+</div>
+
+<div id="posts">
+  {% for post in posts %}{% include "forum/_post.html" %}{% endfor %}
+</div>
+
+<form class="form reply-form" method="post" action="/forum/t/{{ thread.id }}/reply"
+      hx-post="/forum/t/{{ thread.id }}/reply"
+      hx-target="#posts" hx-swap="beforeend"
+      hx-on::after-request="if(event.detail.successful && !event.detail.xhr.getResponseHeader('X-Form-Error')){this.reset();document.getElementById('reply-slot').innerHTML=''}">
+  <h2>Reply</h2>
+  <div id="reply-slot">{% if error %}<p class="form__error">{{ error }}</p>{% endif %}</div>
+  <label class="form__field">
+    <textarea name="body" rows="4" required maxlength="10000"
+              placeholder="Write a reply…"></textarea>
+  </label>
+  <button class="btn btn--primary">Post reply</button>
+</form>
+<script src="/static/js/htmx.min.js?v={{ asset_v }}" defer></script>
+{% endblock %}

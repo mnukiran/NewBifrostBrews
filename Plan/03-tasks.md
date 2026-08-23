@@ -57,10 +57,10 @@ Status legend: `[x]` done · `[ ]` pending · `[~]` in progress
 - [x] Extend Phase 2 auth to regular (non-admin) forum users: shared
       `/login` + `/signup` + `/logout`, current-user middleware, logged-in
       state in the nav, forum page gated to members.
-- [ ] `categories`, `threads`, `posts` tables.
-- [ ] Category list → thread list → thread detail pages.
-- [ ] New thread / reply forms (htmx partial submit, no full reload).
-- [ ] Basic abuse safeguard (rate-limit posting, or at minimum a way to
+- [x] `categories`, `threads`, `posts` tables (seeded default categories).
+- [x] Category list → thread list → thread detail pages.
+- [x] New thread / reply forms (htmx partial submit, no full reload).
+- [x] Basic abuse safeguard (15s post cooldown + admin hide/unhide post + delete thread) (rate-limit posting, or at minimum a way to
       delete/hide a post as the admin) — not full moderation tooling.
 
 ## Phase 4 — Deploy to phone (Termux on the OnePlus 7T)
