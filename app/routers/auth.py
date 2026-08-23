@@ -29,8 +29,18 @@ def flash(response: Response, message: str) -> None:
     )
 
 
-def login_response(token: str, next_url: str, message: str) -> RedirectResponse:
-    response = RedirectResponse(safe_next(next_url), status_code=303)
+def is_htmx(request: Request) -> bool:
+    return request.headers.get("HX-Request") == "true"
+
+
+def login_response(request: Request, token: str, next_url: str, message: str) -> Response:
+    if is_htmx(request):
+        # htmx submit: cookies ride on this response, HX-Redirect makes
+        # the browser do a full navigation to the destination.
+        response = Response(status_code=200)
+        response.headers["HX-Redirect"] = safe_next(next_url)
+    else:
+        response = RedirectResponse(safe_next(next_url), status_code=303)
     response.set_cookie(
         SESSION_COOKIE,
         token,
@@ -41,6 +51,26 @@ def login_response(token: str, next_url: str, message: str) -> RedirectResponse:
     )
     flash(response, message)
     return response
+
+
+def auth_error(
+    request: Request, mode: str, error: str, next_url: str, username: str,
+    status: int,
+):
+    context = {
+        "mode": mode,
+        "error": error,
+        "next": safe_next(next_url),
+        "username": username,
+        "invite_required": bool(INVITE_CODE),
+    }
+    if is_htmx(request):
+        # 200 so htmx swaps the card in place with the error shown.
+        return templates.TemplateResponse(
+            request, "auth/_auth_card.html", context
+        )
+    template = "auth/login.html" if mode == "login" else "auth/signup.html"
+    return templates.TemplateResponse(request, template, context, status_code=status)
 
 
 def validate_new_password(password: str, password_confirm: str) -> str | None:
@@ -59,7 +89,8 @@ def login_form(request: Request, next: str = "/"):
     return templates.TemplateResponse(
         request,
         "auth/login.html",
-        {"error": None, "next": next, "username": ""},
+        {"mode": "login", "error": None, "next": next, "username": "",
+         "invite_required": bool(INVITE_CODE)},
     )
 
 
@@ -75,15 +106,12 @@ def login(
             "SELECT * FROM users WHERE username = ?", (username,)
         ).fetchone()
         if user is None or not verify_password(password, user["password_hash"]):
-            return templates.TemplateResponse(
-                request,
-                "auth/login.html",
-                {"error": "Wrong username or password.",
-                 "next": safe_next(next), "username": username},
-                status_code=401,
+            return auth_error(
+                request, "login", "Wrong username or password.",
+                next, username, status=401,
             )
         token = create_session(conn, user["id"])
-    return login_response(token, next, f"Welcome back, {user['username']}.")
+    return login_response(request, token, next, f"Welcome back, {user['username']}.")
 
 
 @router.get("/signup")
@@ -94,8 +122,8 @@ def signup_form(request: Request, next: str = "/forum"):
     return templates.TemplateResponse(
         request,
         "auth/signup.html",
-        {"error": None, "invite_required": bool(INVITE_CODE),
-         "next": next, "username": ""},
+        {"mode": "signup", "error": None, "next": next, "username": "",
+         "invite_required": bool(INVITE_CODE)},
     )
 
 
@@ -109,13 +137,7 @@ def signup(
     next: str = Form("/forum"),
 ):
     def fail(message: str, status: int = 400):
-        return templates.TemplateResponse(
-            request,
-            "auth/signup.html",
-            {"error": message, "invite_required": bool(INVITE_CODE),
-             "next": safe_next(next), "username": username},
-            status_code=status,
-        )
+        return auth_error(request, "signup", message, next, username, status)
 
     if INVITE_CODE and invite_code.strip() != INVITE_CODE:
         return fail("Invalid invite code.", status=403)
@@ -137,7 +159,8 @@ def signup(
         )
         token = create_session(conn, cur.lastrowid)
     return login_response(
-        token, next, f"Welcome to Bifrost Brews, {username} — your account is ready."
+        request, token, next,
+        f"Welcome to Bifrost Brews, {username} — your account is ready.",
     )
 
 

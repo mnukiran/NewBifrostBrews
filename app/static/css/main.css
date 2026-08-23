@@ -507,6 +507,86 @@ p + p {
   background: var(--bg);
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
+/* ---- Landing (logged-out home / forum teaser) ---- */
+
+.landing {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 48px;
+  align-items: start;
+  padding-top: 32px;
+}
+.landing__pitch h1 {
+  font-size: var(--fs-hero);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+.landing__pitch .tagline {
+  font-size: var(--fs-subhead);
+  color: var(--text-muted);
+  margin-top: 12px;
+}
+@media (max-width: 800px) {
+  .landing {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+
+.forum-list--teaser .forum-list__title {
+  color: var(--text);
+}
+
+/* ---- Auth card ---- */
+
+.auth-card {
+  padding: 24px;
+}
+.auth-card:hover {
+  border-color: var(--border);
+}
+
+.auth-card__tabs {
+  display: flex;
+  gap: 4px;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 4px;
+  margin-bottom: 20px;
+}
+.auth-card__tab {
+  flex: 1;
+  font: inherit;
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  color: var(--text-muted);
+  background: none;
+  border: 0;
+  border-radius: 6px;
+  padding: 8px 0;
+  cursor: pointer;
+  transition: background 130ms ease, color 130ms ease;
+}
+.auth-card__tab.is-active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: 0 0 0 1px var(--border);
+}
+
+.btn--full {
+  width: 100%;
+  text-align: center;
+}
+
+.auth-page {
+  max-width: 420px;
+  margin: 32px auto 0;
+}
+
 .flash {
   background: color-mix(in srgb, var(--accent) 10%, var(--surface));
   border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--border));

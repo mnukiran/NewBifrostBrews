@@ -1,5 +1,6 @@
 from fastapi import APIRouter, HTTPException, Request
 
+from app.config import INVITE_CODE
 from app.db import get_db
 from app.services.content import render_body
 from app.templating import templates
@@ -9,7 +10,13 @@ router = APIRouter()
 
 @router.get("/")
 def home(request: Request):
-    return templates.TemplateResponse(request, "public/home.html", {"active": "home"})
+    return templates.TemplateResponse(
+        request,
+        "public/home.html",
+        {"active": "home", "mode": "signup", "next": "/forum",
+         "error": None, "username": "", "invite_required": bool(INVITE_CODE),
+         "wide": request.state.user is None},
+    )
 
 
 @router.get("/courses")

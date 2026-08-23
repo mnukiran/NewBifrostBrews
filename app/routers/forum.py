@@ -4,6 +4,7 @@ from urllib.parse import quote
 from fastapi import APIRouter, Depends, Form, HTTPException, Request
 from fastapi.responses import RedirectResponse
 
+from app.config import INVITE_CODE
 from app.db import get_db
 from app.templating import templates
 
@@ -44,16 +45,21 @@ def cooldown_active(conn: sqlite3.Connection, user_id: int) -> bool:
 
 @router.get("")
 def index(request: Request):
-    if request.state.user is None:
-        return templates.TemplateResponse(
-            request, "forum/locked.html", {"active": "forum"}
-        )
     with get_db() as conn:
         categories = conn.execute(
             """SELECT c.*, COUNT(t.id) AS thread_count
                FROM categories c LEFT JOIN threads t ON t.category_id = c.id
                GROUP BY c.id ORDER BY c.sort"""
         ).fetchall()
+    if request.state.user is None:
+        # Logged out: category teaser + inline auth card on one page.
+        return templates.TemplateResponse(
+            request,
+            "forum/locked.html",
+            {"active": "forum", "categories": categories, "mode": "login",
+             "next": "/forum", "error": None, "username": "",
+             "invite_required": bool(INVITE_CODE), "wide": True},
+        )
     return templates.TemplateResponse(
         request, "forum/index.html", {"active": "forum", "categories": categories}
     )

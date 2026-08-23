@@ -1,23 +1,37 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if request.state.user %}
 <div class="hero">
   <h1>{{ site_name }}</h1>
   <p class="tagline">{{ tagline }}</p>
 </div>
 
 <p>
-  A home for Gen&nbsp;AI course notes and the conversations around them.
-  Browse curated courses on agents, LLMs, and everything in between — then
-  head to the forum to talk it over.
+  Good to see you, {{ request.state.user.username }}. Pick up where the
+  conversation left off, or dive into a course.
 </p>
 
 <p style="margin-top: 24px;">
   <a class="btn btn--primary" href="/courses">Browse courses</a>
-  {% if request.state.user %}
   <a class="btn btn--ghost" href="/forum">Go to the forum</a>
-  {% else %}
-  <a class="btn btn--ghost" href="/signup">Join the forum</a>
-  {% endif %}
 </p>
+{% else %}
+<div class="landing">
+  <div class="landing__pitch">
+    <h1>{{ site_name }}</h1>
+    <p class="tagline">{{ tagline }}</p>
+    <p style="margin-top: 16px;">
+      Curated Gen&nbsp;AI courses with notes and videos you can watch right
+      on the page — and a forum where coworkers talk it all over.
+    </p>
+    <p style="margin-top: 16px;">
+      <a class="btn btn--ghost" href="/courses">Browse courses first</a>
+    </p>
+  </div>
+  <div class="landing__auth">
+    {% include "auth/_auth_card.html" %}
+  </div>
+</div>
+{% endif %}
 {% endblock %}

@@ -1,0 +1,60 @@
+{# Reusable inline auth card. Context: mode ('login'|'signup'), next,
+   error, username, invite_required. Swapped in place by htmx on error;
+   successful auth sends HX-Redirect to `next`. #}
+<div class="auth-card card" x-data="{ mode: '{{ mode }}' }">
+  <div class="auth-card__tabs">
+    <button type="button" class="auth-card__tab"
+            :class="{ 'is-active': mode === 'login' }"
+            @click="mode = 'login'">Log in</button>
+    <button type="button" class="auth-card__tab"
+            :class="{ 'is-active': mode === 'signup' }"
+            @click="mode = 'signup'">Sign up</button>
+  </div>
+
+  {% if error %}<p class="form__error">{{ error }}</p>{% endif %}
+
+  <form class="form" method="post" action="/login"
+        hx-post="/login" hx-target="closest .auth-card" hx-swap="outerHTML"
+        x-show="mode === 'login'" {% if mode != 'login' %}x-cloak{% endif %}>
+    <input type="hidden" name="next" value="{{ next }}">
+    <label class="form__field">
+      <span>Username</span>
+      <input name="username" autocomplete="username" required value="{{ username }}">
+    </label>
+    <label class="form__field">
+      <span>Password</span>
+      <input name="password" type="password" autocomplete="current-password" required>
+    </label>
+    <button class="btn btn--primary btn--full">Log in</button>
+    <p class="meta">New here?
+      <a href="/signup?next={{ next | urlencode }}" @click.prevent="mode = 'signup'">Create an account.</a></p>
+  </form>
+
+  <form class="form" method="post" action="/signup"
+        hx-post="/signup" hx-target="closest .auth-card" hx-swap="outerHTML"
+        x-show="mode === 'signup'" {% if mode != 'signup' %}x-cloak{% endif %}>
+    <input type="hidden" name="next" value="{{ next }}">
+    <label class="form__field">
+      <span>Username <span class="muted">(letters, digits, underscores)</span></span>
+      <input name="username" autocomplete="username" required
+             minlength="3" maxlength="30" pattern="[A-Za-z0-9_]+" value="{{ username }}">
+    </label>
+    <label class="form__field">
+      <span>Password <span class="muted">(at least 8 characters)</span></span>
+      <input name="password" type="password" autocomplete="new-password" required minlength="8">
+    </label>
+    <label class="form__field">
+      <span>Confirm password</span>
+      <input name="password_confirm" type="password" autocomplete="new-password" required minlength="8">
+    </label>
+    {% if invite_required %}
+    <label class="form__field">
+      <span>Invite code</span>
+      <input name="invite_code" required>
+    </label>
+    {% endif %}
+    <button class="btn btn--primary btn--full">Create account</button>
+    <p class="meta">Already have one?
+      <a href="/login?next={{ next | urlencode }}" @click.prevent="mode = 'login'">Log in.</a></p>
+  </form>
+</div>

@@ -3,33 +3,7 @@
 {% block title %}Sign up · {{ site_name }}{% endblock %}
 
 {% block content %}
-<h1>Sign up</h1>
-<p class="muted">Create an account to join the forum and the conversation.</p>
-<form class="form" method="post" action="/signup" style="margin-top: 24px;">
-  <input type="hidden" name="next" value="{{ next }}">
-  {% if error %}<p class="form__error">{{ error }}</p>{% endif %}
-  <label class="form__field">
-    <span>Username <span class="muted">(letters, digits, underscores)</span></span>
-    <input name="username" autocomplete="username" required autofocus
-           minlength="3" maxlength="30" pattern="[A-Za-z0-9_]+"
-           value="{{ username }}">
-  </label>
-  <label class="form__field">
-    <span>Password <span class="muted">(at least 8 characters)</span></span>
-    <input name="password" type="password" autocomplete="new-password" required minlength="8">
-  </label>
-  <label class="form__field">
-    <span>Confirm password</span>
-    <input name="password_confirm" type="password" autocomplete="new-password" required minlength="8">
-  </label>
-  {% if invite_required %}
-  <label class="form__field">
-    <span>Invite code</span>
-    <input name="invite_code" required>
-  </label>
-  {% endif %}
-  <button class="btn btn--primary">Create account</button>
-  <p class="meta">Already have one?
-    <a href="/login?next={{ next | urlencode }}">Log in.</a></p>
-</form>
+<div class="auth-page">
+  {% include "auth/_auth_card.html" %}
+</div>
 {% endblock %}

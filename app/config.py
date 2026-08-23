@@ -19,4 +19,4 @@ COOKIE_SECURE = os.environ.get("BIFROST_COOKIE_SECURE", "") == "1"
 INVITE_CODE = os.environ.get("BIFROST_INVITE_CODE", "").strip()
 
 # Bump when static assets change so far-future-cached clients refetch.
-ASSET_VERSION = "5"
+ASSET_VERSION = "6"

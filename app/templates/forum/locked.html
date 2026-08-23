@@ -3,10 +3,24 @@
 {% block title %}Forum · {{ site_name }}{% endblock %}
 
 {% block content %}
-<h1>Forum</h1>
-<div class="empty-state">
-  <p>The forum is for members.
-     <a href="/login?next=/forum">Log in</a> or
-     <a href="/signup?next=/forum">sign up</a> to join in.</p>
+<div class="landing landing--forum">
+  <div class="landing__pitch">
+    <h1>Forum</h1>
+    <p class="muted">Here's what's brewing inside — join to read and post.</p>
+    <ul class="forum-list forum-list--teaser">
+      {% for c in categories %}
+      <li class="card forum-list__row">
+        <div>
+          <span class="forum-list__title">{{ c.name }}</span>
+          {% if c.description %}<p class="meta">{{ c.description }}</p>{% endif %}
+        </div>
+        <span class="pill">{{ c.thread_count }} thread{{ "s" if c.thread_count != 1 else "" }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="landing__auth">
+    {% include "auth/_auth_card.html" %}
+  </div>
 </div>
 {% endblock %}
