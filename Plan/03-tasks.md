@@ -1,0 +1,79 @@
+# Task List
+
+Status legend: `[x]` done · `[ ]` pending · `[~]` in progress
+
+## Phase 0 — Planning
+- [x] Decide to reuse this repo instead of starting a new one.
+- [x] Decide tech stack (FastAPI + Jinja2 + htmx + Alpine + SQLite, plain CSS).
+- [x] Write overview doc ([[00-overview]]).
+- [x] Write architecture doc, incl. Termux hosting concerns ([[01-architecture]]).
+- [x] Write UI design style guide ([[02-ui-design]]).
+- [x] Write branding doc with tagline options ([[04-branding]]).
+- [x] Remove old BifrostBrews app code (done in commit `1183500`; old code
+      + vendored assets remain recoverable from git history).
+- [x] Fold in hosting/UX requirements: OnePlus 7T target, admin HTML/CSS/JS
+      content editor, in-page YouTube playback.
+- [ ] User reviews these docs and answers the open questions in
+      [[00-overview]] (forum account creation, LAN-only vs tunnel, tagline).
+
+## Phase 1 — Site shell
+- [ ] New `pyproject.toml` from scratch (fastapi, uvicorn, jinja2 — no
+      alembic/ORM per [[01-architecture]]).
+- [ ] `app/main.py` + `app/config.py` + `app/db.py` skeleton.
+- [ ] Base template (`base.html`) with nav, footer, design tokens as CSS
+      custom properties from [[02-ui-design]].
+- [ ] Home page.
+- [ ] About page.
+- [ ] Empty/"coming soon" placeholder pages for Courses and Forum.
+- [ ] Light/dark theme via `prefers-color-scheme`.
+- [ ] Vendor htmx.min.js + Alpine.min.js + fonts (recover from git history
+      — e.g. `git show f57464e:app/static/...` — or re-fetch fresh).
+- [ ] GZip middleware + static-asset cache headers ([[01-architecture]]
+      "Performance & UX practices").
+- [ ] Smoke-test locally on laptop (`uvicorn app.main:app --reload`).
+
+## Phase 2 — Courses section + admin editor (no real content yet)
+- [ ] `courses` table/schema (content stored in SQLite: `body_html`,
+      `custom_css`, `custom_js`, `published` — see [[01-architecture]]
+      "Admin content authoring").
+- [ ] `users` table + scrypt password hashing + session cookie auth for the
+      single admin account (Phase 3 reuses this for forum users).
+- [ ] Admin router + login page.
+- [ ] Admin course editor: HTML/CSS/JS textareas, htmx live preview,
+      draft/publish toggle ([[02-ui-design]] "Admin editor").
+- [ ] Course list page (grid of cards, using [[02-ui-design]] card
+      component; published courses only).
+- [ ] Course detail page rendering admin content (unescaped `body_html` in
+      a `.course-content` container + scoped custom CSS/JS).
+- [ ] YouTube embed support: responsive 16:9 facade component (thumbnail +
+      play button → swaps to `youtube-nocookie.com` iframe, plays in-page)
+      and `{{yt:VIDEO_ID}}` shortcode expansion in the content service.
+- [ ] SQLite `PRAGMA journal_mode=WAL` + `synchronous=NORMAL` in `db.py`.
+
+## Phase 3 — Forum
+- [ ] Decide account-creation mechanism (blocked on open question in
+      [[00-overview]]: admin-created accounts vs invite code).
+- [ ] Extend Phase 2 auth to regular (non-admin) forum users.
+- [ ] `categories`, `threads`, `posts` tables.
+- [ ] Category list → thread list → thread detail pages.
+- [ ] New thread / reply forms (htmx partial submit, no full reload).
+- [ ] Basic abuse safeguard (rate-limit posting, or at minimum a way to
+      delete/hide a post as the admin) — not full moderation tooling.
+
+## Phase 4 — Deploy to phone (Termux on the OnePlus 7T)
+- [ ] Install Termux + required packages (python, sqlite, termux-services,
+      termux-api) on the OnePlus 7T (LineageOS).
+- [ ] `scripts/serve.sh` — acquire `termux-wake-lock`, run uvicorn.
+- [ ] Wire up as a `termux-services` supervised service.
+- [ ] Install `Termux:Boot` companion app, add boot script for auto-start.
+- [ ] Decide + implement reachability (Tailscale, tunnel, or LAN-only).
+- [ ] DB backup job (copy SQLite file off-device periodically).
+- [ ] End-to-end test: reboot the phone, confirm site comes back up on its
+      own.
+
+## Explicitly deferred / not doing yet
+- Real course content/data entry.
+- OAuth or third-party login for the forum.
+- Any moderation dashboard beyond a basic delete/hide.
+- Multi-tenant support for more than one company/community.
+- Containerization.
